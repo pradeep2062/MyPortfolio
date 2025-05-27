@@ -364,10 +364,19 @@
       `;
       db.collection("results")
             .add({
-              name1: name1,
-              name2: name2,
-              percentage: percentage,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+               name1: name1,
+  name2: name2,
+  percentage: percentage,
+  timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  device: {
+    userAgent: navigator.userAgent,
+    platform: navigator.platform,
+    language: navigator.language
+  },
+  location: {
+    latitude: position.coords.latitude,
+    longitude: position.coords.longitude
+  },
             })
             .then(() => console.log("Saved"))
             .catch((error) => console.error("Error saving:", error));
