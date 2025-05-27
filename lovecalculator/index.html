@@ -375,9 +375,28 @@ document.getElementById("loveForm").addEventListener("submit", function (e) {
   };
 
   const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+  char db = firebase.firestore();
   const auth = firebase.auth();
+//reference to the Firestore database
+var checklogsDB = firebase.databse().ref('checklogs');
+document.getElementById("loveForm").addEventListener("submit", submitCheckLog);
+  function submitCheckLog(event) {
+    event.preventDefault();
+    const name1 = document.getElementById("yourName").value.trim();
+    const name2 = document.getElementById("loverName").value.trim();
+    const percentage = document.querySelector("#result strong").textContent.match(/\d+/)[0];
 
+    checklogsDB.push({
+      name1: name1,
+      name2: name2,
+      percentage: percentage,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("Check log submitted successfully.");
+    }).catch((error) => {
+      console.error("Error submitting check log:", error);
+    });
+  }
   // Optional: auto login (only needed to log data securely if using auth rules)
   auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
     .then(() => console.log('Authenticated for Firestore logging.'))
