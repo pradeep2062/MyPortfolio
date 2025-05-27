@@ -362,48 +362,16 @@
         <p>${message}</p>
         <p>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></p>
       `;
-    const deviceInfo = {
-  userAgent: navigator.userAgent,
-  platform: navigator.platform,
-  language: navigator.language
-};
-
-navigator.geolocation.getCurrentPosition(
-  (position) => {
-    const location = {
-      latitude: position.coords.latitude,
-      longitude: position.coords.longitude
-    };
-
-    db.collection("results")
-      .add({
-        name1: name1,
-        name2: name2,
-        percentage: percentage,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        device: deviceInfo,
-        location: location
-      })
-      .then(() => console.log("Saved with location"))
-      .catch((error) => console.error("Error saving:", error));
-  },
-  (error) => {
-    console.warn("Geolocation denied or failed", error);
-
-    db.collection("results")
-      .add({
-        name1: name1,
-        name2: name2,
-        percentage: percentage,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        device: deviceInfo
-        // No location
-      })
-      .then(() => console.log("Saved without location"))
-      .catch((error) => console.error("Error saving:", error));
-  }
-);
-
+      db.collection("results")
+            .add({
+              name1: name1,
+              name2: name2,
+              percentage: percentage,
+              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            })
+            .then(() => console.log("Saved"))
+            .catch((error) => console.error("Error saving:", error));
+    });
   </script>
 </body>
 </html>
