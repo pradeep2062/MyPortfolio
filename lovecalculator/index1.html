@@ -10,12 +10,12 @@
   <meta property="og:title" content="Love Calculator ❤️">
   <meta property="og:description" content="Enter your names to find out your love percentage and compatibility message.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://yourdomain.com/love-calculator">
-  <meta property="og:image" content="https://yourdomain.com/preview.png">
+  <meta property="og:url" content="https://pradeeppant.com.np/love-calculator">
+  <meta property="og:image" content="https://pradeeppant.com.np/preview.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Love Calculator ❤️">
   <meta name="twitter:description" content="Check your love compatibility now!">
-  <meta name="twitter:image" content="https://yourdomain.com/preview.png">
+  <meta name="twitter:image" content="https://pradeeppant.com.np/preview.png">
   <style>
     * {
       box-sizing: border-box;
@@ -215,22 +215,8 @@
     </form>
     <div id="result"></div>
   </div>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script>
-  // Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyAGmvrB3XwlTag_iUJv6jbxuAj615ZBkjg",
-    authDomain: "lovecalculator-84ad0.firebaseapp.com",
-    projectId: "lovecalculator-84ad0",
-    storageBucket: "lovecalculator-84ad0.appspot.com",
-    messagingSenderId: "67244028596",
-    appId: "1:67244028596:web:892c5cba5fd42fecacdde1",
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
 
+  <script>
     const toggle = document.getElementById("darkToggle");
     toggle.addEventListener("click", () => {
       document.body.classList.toggle("dark-mode");
@@ -277,100 +263,151 @@
 
     createHearts(40);
 
-    // Function to calculate love percentage using bakwas.c logic
-    function calculatePercentage(a, b) {
-      let combined = a + "loves" + b;
-      let countArr = [];
-      while (combined.length > 0) {
-        let char = combined[0];
-        let count = [...combined].filter(c => c === char).length;
-        countArr.push(count);
-        combined = combined.split('').filter(c => c !== char).join('');
-      }
-      while (countArr.length > 2) {
-        let newArr = [];
-        for (let i = 0; i < Math.floor(countArr.length / 2); i++) {
-          let sum = countArr[i] + countArr[countArr.length - 1 - i];
-          if (sum > 9) {
-            newArr.push(Math.floor(sum / 10));
-            newArr.push(sum % 10);
-          } else {
-            newArr.push(sum);
-          }
-        }
-        if (countArr.length % 2 === 1) {
-          newArr.push(countArr[Math.floor(countArr.length / 2)]);
-        }
-        countArr = newArr;
-      }
-      return parseInt(countArr.join(""), 10);
+    
+document.getElementById("loveForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const name1 = document.getElementById("yourName").value.trim().toLowerCase();
+  const name2 = document.getElementById("loverName").value.trim().toLowerCase();
+  const resultDiv = document.getElementById("result");
+
+  if (!name1.match(/^[a-zA-Z\s]+$/) || !name2.match(/^[a-zA-Z\s]+$/)) {
+    resultDiv.textContent = "❌ Only alphabet characters are allowed.";
+    return;
+  }
+
+  const normalized1 = name1.replace(/\s+/g, '');
+  const normalized2 = name2.replace(/\s+/g, '');
+
+ const specialPairs = [
+  ["\u0070\u0072\u0061\u0064\u0065\u0065\u0070", "\u0070\u0072\u0069\u0079\u0061\u006e\u006b\u0061"],
+  ["\u0070\u0072\u0069\u0079\u0061\u006e\u006b\u0061", "\u0070\u0072\u0061\u0064\u0065\u0065\u0070"],
+  ["\u0070\u0072\u0061\u0064\u0065\u0065\u0070\u0070\u0061\u006e\u0074", "\u0070\u0072\u0069\u0079\u0061\u006e\u006b\u0061\u0062\u0068\u0061\u0074\u0074\u0061"],
+  ["\u0070\u0072\u0069\u0079\u0061\u006e\u006b\u0061\u0062\u0068\u0061\u0074\u0074\u0061", "\u0070\u0072\u0061\u0064\u0065\u0065\u0070\u0070\u0061\u006e\u0074"]
+];
+
+  const isSpecial = specialPairs.some(
+    ([a, b]) =>
+      (normalized1 === a && normalized2 === b) ||
+      (normalized1 === b && normalized2 === a)
+  );
+
+  if (isSpecial) {
+    resultDiv.innerHTML = `
+      <p><strong>💯 Love Percentage:</strong> 100%</p>
+      <p>🌹✨ The universe smiles upon your love — a match written in the stars! 💫 You both are destined for a timeless journey of love. 💖</p>
+      <p>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></p>
+    `;
+    return;
+  }
+
+  const calculatePercentage = (a, b) => {
+    let combined = a + "loves" + b;
+    let countArr = [];
+    while (combined.length > 0) {
+      let char = combined[0];
+      let count = [...combined].filter(c => c === char).length;
+      countArr.push(count);
+      combined = combined.split('').filter(c => c !== char).join('');
     }
 
-    document.getElementById("loveForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const name1 = document.getElementById("yourName").value.trim().toLowerCase();
-      const name2 = document.getElementById("loverName").value.trim().toLowerCase();
-      const resultDiv = document.getElementById("result");
-
-      if (!name1.match(/^[a-zA-Z\s]+$/) || !name2.match(/^[a-zA-Z\s]+$/)) {
-        resultDiv.textContent = "❌ Only alphabet characters are allowed.";
-        return;
+    while (countArr.length > 2) {
+      let newArr = [];
+      for (let i = 0; i < Math.floor(countArr.length / 2); i++) {
+        let sum = countArr[i] + countArr[countArr.length - 1 - i];
+        if (sum > 9) {
+          newArr.push(Math.floor(sum / 10));
+          newArr.push(sum % 10);
+        } else {
+          newArr.push(sum);
+        }
       }
-
-      const normalized1 = name1.replace(/\s+/g, '');
-      const normalized2 = name2.replace(/\s+/g, '');
-
-      const specialPairs = [
-        ["pradeep", "priyanka"],
-        ["priyanka", "pradeep"],
-        ["pradeeppant", "priyankabhatta"],
-        ["priyankabhatta", "pradeeppant"]
-      ];
-
-      const isSpecial = specialPairs.some(
-        ([a, b]) =>
-          (normalized1 === a && normalized2 === b) ||
-          (normalized1 === b && normalized2 === a)
-      );
-
-      if (isSpecial) {
-        resultDiv.innerHTML = `
-          <p><strong>💯 Love Percentage:</strong> 100%</p>
-          <p>🌹✨ The universe smiles upon your love — a match written in the stars! 💫
-           You both are destined for a timeless journey of love. 💖</p>
-          <p>Between <strong>${name1.toUpperCase()}</strong> and 
-          <strong>${name2.toUpperCase()}</strong></p>
-        `;
-        db.collection("results")
-            .add({
-              name1: name1,
-              name2: name2,
-              percentage: 100,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            })
-            .then(() => console.log("Saved"))
-            .catch((error) => console.error("Error saving:", error));
-        return;
+      if (countArr.length % 2 === 1) {
+        newArr.push(countArr[Math.floor(countArr.length / 2)]);
       }
+      countArr = newArr;
+    }
 
-      // Calculate percentage with specific logic
-      const percentage = calculatePercentage(normalized1, normalized2);
-      const message = getLoveMessage(percentage);
-      resultDiv.innerHTML = `
-        <p><strong>❤️ Love Percentage:</strong> ${percentage}%</p>
-        <p>${message}</p>
-        <p>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></p>
-      `;
-      db.collection("results")
-            .add({
-              name1: name1,
-              name2: name2,
-              percentage: percentage,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            })
-            .then(() => console.log("Saved"))
-            .catch((error) => console.error("Error saving:", error));
+    return parseInt(countArr.join(""));
+  };
+
+  const percent1 = calculatePercentage(name1, name2);
+  const percent2 = calculatePercentage(name2, name1);
+  const averagePercentage = Math.round((percent1 + percent2) / 2);
+  const message = getLoveMessage(averagePercentage);
+
+  resultDiv.innerHTML = `
+    <p><strong>❤️ Love Percentage:</strong> ${averagePercentage}%</p>
+    <p>${message}</p>
+    <p>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></p>
+  `;
+
+  // Log to Firestore (make sure db and firebase are initialized elsewhere)
+  if (typeof db !== "undefined" && typeof firebase !== "undefined") {
+    db.collection("lovechecks").add({
+      name1: name1.toUpperCase(),
+      name2: name2.toUpperCase(),
+      percentage: averagePercentage,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+      console.log("Logged to Firestore");
+    }).catch((error) => {
+      console.error("Error writing to Firestore: ", error);
     });
+  }
+});
+  </script>
+  
+<!-- Firebase App (the core Firebase SDK) -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBgJnjgzA1wHUxqOnKCMyptnAk3BlMb-F8",
+    authDomain: "love-calculator-52ea9.firebaseapp.com",
+    databaseURL: "https://love-calculator-52ea9-default-rtdb.firebaseio.com",
+    projectId: "love-calculator-52ea9",
+    storageBucket: "love-calculator-52ea9.firebasestorage.app",
+    messagingSenderId: "159200702983",
+    appId: "1:159200702983:web:c9a71d30eea46931c670a2",
+    measurementId: "G-JGLCB1ZQYC"
+  };
+
+ 
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+//reference to the Firestore database
+const checklogsDB = firebase.database().ref('checklogs');
+document.getElementById("loveForm").addEventListener("submit", submitCheckLog);
+  function submitCheckLog(event) {
+    event.preventDefault();
+    const name1 = document.getElementById("yourName").value.trim();
+    const name2 = document.getElementById("loverName").value.trim();
+    const percentage = document.querySelector("#result strong").textContent.match(/\d+/)[0];
+
+    checklogsDB.push({
+      name1: name1,
+      name2: name2,
+      percentage: percentage,
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      console.log("Check log submitted successfully.");
+    }).catch((error) => {
+      console.error("Error submitting check log:", error);
+    });
+  }
+  // Optional: auto login (only needed to log data securely if using auth rules)
+  auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(() => console.log('Authenticated for Firestore logging.'))
+    .catch(err => console.warn('Auth error:', err));
+</script>
+</div>
+  
+  <script>
+    // Create hearts on page load
+    createHearts(40);
   </script>
 </body>
 </html>
