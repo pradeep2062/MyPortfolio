@@ -19,8 +19,8 @@
   #hamburger-nav {
     display: flex;
   }
-  #experience,
-  .experience-details-container {
+  #skill,
+  .skill-details-container {
     margin-top: 2rem;
   }
   #profile,
@@ -92,7 +92,7 @@
   .nav-links li a {
     font-size: 1rem;
   }
-  .experience-sub-title {
+  .skill-sub-title {
     font-size: 1.25rem;
   }
   .logo {
@@ -103,4 +103,3 @@
     gap: 0.5rem;
     text-align: center;
   }
-  .
