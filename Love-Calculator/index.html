@@ -343,7 +343,7 @@ document.getElementById("loveForm").addEventListener("submit", function (e) {
 
   // Log to Firestore (make sure db and firebase are initialized elsewhere)
   if (typeof db !== "undefined" && typeof firebase !== "undefined") {
-    db.collection("history").add({
+    db.collection("lovechecks").add({
       name1: name1.toUpperCase(),
       name2: name2.toUpperCase(),
       percentage: averagePercentage,
@@ -363,6 +363,8 @@ document.getElementById("loveForm").addEventListener("submit", function (e) {
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
 
 <script>
+  import { initializeApp } from "firebase/app";
+  import { getAnalytics } from "firebase/analytics";
   const firebaseConfig = {
     apiKey: "AIzaSyBPdEH4AkvQHjNNJ2cfZvuc2z9V-hR7wnQ",
     authDomain: "love-calculator-abb6d.firebaseapp.com",
