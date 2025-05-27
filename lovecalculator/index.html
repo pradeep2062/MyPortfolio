@@ -374,11 +374,12 @@ document.getElementById("loveForm").addEventListener("submit", function (e) {
     measurementId: "G-JGLCB1ZQYC"
   };
 
-  const app = firebase.initializeApp(firebaseConfig);
-  char db = firebase.firestore();
+ 
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
   const auth = firebase.auth();
 //reference to the Firestore database
-var checklogsDB = firebase.databse().ref('checklogs');
+const checklogsDB = firebase.database().ref('checklogs');
 document.getElementById("loveForm").addEventListener("submit", submitCheckLog);
   function submitCheckLog(event) {
     event.preventDefault();
