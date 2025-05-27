@@ -2,118 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Love Calculator ❤</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-  <meta name="description" content="Discover your romantic compatibility with our elegantly crafted Love Calculator.">
-  <meta name="author" content="Love Calculator App" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Love Calculator ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --light-bg: linear-gradient(to right, #ffdde1, #ee9ca7);
-      --dark-bg: linear-gradient(to right, #232526, #414345);
-      --accent: #ff4d6d;
-    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--light-bg);
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      overflow: hidden;
       position: relative;
-      transition: background 0.6s ease, color 0.4s ease;
+      transition: background 0.5s ease;
     }
+
     body.dark-mode {
-      background: var(--dark-bg);
-      color: #f2f2f2;
-    }
-    .container {
-      background: #ffffffcc;
-      backdrop-filter: blur(10px);
-      padding: 40px 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-      text-align: center;
-      max-width: 500px;
-      width: 90%;
-      transition: background 0.6s;
-    }
-    .dark-mode .container {
-      background: #1f1f1fcc;
-    }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5em;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-    input {
-      padding: 12px;
-      width: 100%;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      font-size: 16px;
-      margin: 10px 0;
-      transition: border 0.3s ease;
-    }
-    input:focus {
-      border-color: var(--accent);
-      outline: none;
-    }
-    button {
-      padding: 12px 36px;
-      background: var(--accent);
+      background: linear-gradient(to right, #2c3e50, #4ca1af);
       color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
     }
-    button:hover {
-      background: #e8435c;
-      transform: scale(1.05);
-    }
-    #result {
-      margin-top: 25px;
-      font-size: 18px;
-    }
-    .dark-toggle {
-      position: absolute;
-      top: 25px;
-      right: 25px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 10;
-    }
-    .dark-toggle svg {
-      width: 28px;
-      height: 28px;
-      transition: transform 0.3s ease;
-    }
-    .dark-toggle:hover svg {
-      transform: rotate(20deg);
-    }
+
     .heart-bg {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
+      top: 0;
+      left: 0;
       overflow: hidden;
       z-index: 0;
       pointer-events: none;
     }
+
     .heart {
       position: absolute;
       width: 20px;
@@ -123,6 +51,7 @@
       animation: float 10s ease-in infinite;
       opacity: 0.6;
     }
+
     .heart::before,
     .heart::after {
       content: '';
@@ -132,54 +61,173 @@
       background-color: red;
       border-radius: 50%;
     }
+
     .heart::before {
       top: -10px;
       left: 0;
     }
+
     .heart::after {
       left: -10px;
       top: 0;
     }
+
     @keyframes float {
-      0% { transform: translateY(100vh) rotate(45deg); opacity: 0; }
-      50% { opacity: 0.9; }
-      100% { transform: translateY(-120vh) rotate(45deg); opacity: 0; }
+      0% {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(-120vh) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      padding: 40px 20px;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      animation: fadeIn 1s ease-in-out;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    .dark-mode .container {
+      background: #1e1e1e;
+      color: #ddd;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    h1 {
+      color: #ff4d6d;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .dark-mode p,
+    .dark-mode h1 {
+      color: #f3f3f3;
+    }
+
+    input {
+      padding: 12px;
+      width: 100%;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-size: 16px;
+      margin: 10px 0;
+      display: block;
+      transition: border 0.3s;
+    }
+
+    input:focus {
+      border-color: #ff4d6d;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 40px;
+      background: #ff4d6d;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #e8435c;
+      transform: scale(1.05);
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .dark-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      z-index: 10;
+      transition: background 0.3s;
+    }
+
+    .dark-mode .dark-toggle {
+      background: #333;
+      color: #fff;
     }
   </style>
 </head>
 <body>
-  <button class="dark-toggle" id="darkToggle" aria-label="Toggle Theme">
-    <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"></svg>
-  </button>
+  <button class="dark-toggle" id="darkToggle">🌙 Toggle Dark Mode</button>
   <div class="heart-bg"></div>
   <div class="container">
     <h1>💖 Love Calculator</h1>
-    <p>Discover the magic between two hearts. Enter names below:</p>
+    <p>Enter your names to see your love compatibility!</p>
     <form id="loveForm" autocomplete="off">
-      <input type="text" id="yourName" placeholder="Your Name" required />
-      <input type="text" id="loverName" placeholder="Lover's Name" required />
+      <input type="text" id="yourName" placeholder="Your Name" required pattern="[A-Za-z\s]+" />
+      <input type="text" id="loverName" placeholder="Lover's Name" required pattern="[A-Za-z\s]+" />
       <button type="submit">Calculate Love</button>
     </form>
     <div id="result"></div>
   </div>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <script>
-    const themeIcon = document.getElementById("themeIcon");
-    const darkToggle = document.getElementById("darkToggle");
-    function setThemeIcon(isDark) {
-      themeIcon.innerHTML = isDark
-        ? <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 12a9.75 9.75 0 01-17.43 6.364 9.75 9.75 0 0011.066-15.115A9.751 9.751 0 0121.75 12z" />
-        : <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 000 10 5 5 0 000-10z"/>;
-    }
-    const savedTheme = localStorage.getItem("theme");
-    const isDarkSaved = savedTheme === "dark";
-    if (isDarkSaved) document.body.classList.add("dark-mode");
-    setThemeIcon(isDarkSaved);
-    darkToggle.addEventListener("click", () => {
-      const isDark = document.body.classList.toggle("dark-mode");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      setThemeIcon(isDark);
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGmvrB3XwlTag_iUJv6jbxuAj615ZBkjg",
+      authDomain: "lovecalculator-84ad0.firebaseapp.com",
+      projectId: "lovecalculator-84ad0",
+      storageBucket: "lovecalculator-84ad0.appspot.com",
+      messagingSenderId: "67244028596",
+      appId: "1:67244028596:web:892c5cba5fd42fecacdde1",
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Dark mode toggle
+    document.getElementById("darkToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
     });
+
+    // Create heart background
     function createHearts(count) {
       const bg = document.querySelector(".heart-bg");
       for (let i = 0; i < count; i++) {
@@ -192,91 +240,105 @@
       }
     }
     createHearts(40);
+
+    // Love message generator
     function getLoveMessage(percent) {
-      if (percent < 10) return "💔 The odds are slim, but love always finds its way.";
-      if (percent < 30) return "🧩 Some differences, but also potential sparks.";
-      if (percent < 50) return "🌗 A slow-burning flame that could grow.";
-      if (percent < 70) return "🌹 A promising bond is forming.";
-      if (percent < 90) return "💞 Your hearts share a beautiful rhythm.";
-      if (percent < 100) return "💖 This could be a lasting love story.";
-      return "🌟 A rare cosmic connection. True soulmates!";
+      const messages = [
+        "💔 Your hearts feel miles apart.",
+        "😢 A story not meant to begin.",
+        "😶 A whisper of something... maybe.",
+        "🙂 A soft beginning stirs.",
+        "🤔 Could this be the start of something?",
+        "😊 A rhythm starts to form.",
+        "🥰 Gentle feelings arise.",
+        "😍 Eyes begin to shine brighter.",
+        "😘 A touch of fate brushes by.",
+        "❤️ Two souls quietly harmonize.",
+        "💘 Your names begin to rhyme.",
+        "💖 A growing warmth surrounds you.",
+        "💞 The connection deepens gently.",
+        "💝 Every glance feels like a poem.",
+        "💑 A beautiful beginning unfolds.",
+        "💍 Dreams seem closer together.",
+        "👩‍❤️‍👨 A story written in love.",
+        "💞 Your souls move in sync.",
+        "💖 You are each other's forever.",
+      ];
+      const index = Math.min(Math.floor(percent / 6), messages.length - 1);
+      return messages[index];
     }
+
+    // Love calculation
     function calculatePercentage(a, b) {
       let combined = a + "loves" + b;
       let countArr = [];
       while (combined.length > 0) {
         let char = combined[0];
-        let count = [...combined].filter(c => c === char).length;
+        let count = [...combined].filter((c) => c === char).length;
         countArr.push(count);
-        combined = combined.replaceAll(char, '');
+        combined = combined.split("").filter((c) => c !== char).join("");
       }
+
       while (countArr.length > 2) {
         let newArr = [];
         for (let i = 0; i < Math.floor(countArr.length / 2); i++) {
           let sum = countArr[i] + countArr[countArr.length - 1 - i];
-          if (sum > 9) newArr.push(Math.floor(sum / 10), sum % 10);
-          else newArr.push(sum);
+          if (sum > 9) {
+            newArr.push(Math.floor(sum / 10));
+            newArr.push(sum % 10);
+          } else {
+            newArr.push(sum);
+          }
         }
-        if (countArr.length % 2 === 1) newArr.push(countArr[Math.floor(countArr.length / 2)]);
+        if (countArr.length % 2 === 1) {
+          newArr.push(countArr[Math.floor(countArr.length / 2)]);
+        }
         countArr = newArr;
       }
       return parseInt(countArr.join(""));
     }
-  </script>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
-
-     const firebaseConfig = {
-    apiKey: "AIzaSyAQgpBbvHPpx7-acancqaVdUsOBAwiGjWA",
-    authDomain: "lovecalculatorsystem-f759b.firebaseapp.com",
-    projectId: "lovecalculatorsystem-f759b",
-    storageBucket: "lovecalculatorsystem-f759b.firebasestorage.app",
-    messagingSenderId: "641637272654",
-    appId: "1:641637272654:web:64d1f1b27b2dc7869cc71f",
-    measurementId: "G-PDXR6ZXZLG"
-  };
-
-
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-
-    document.getElementById("loveForm").addEventListener("submit", async function (e) {
+    // Form handler
+    document.getElementById("loveForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const name1 = document.getElementById("yourName").value.trim();
-      const name2 = document.getElementById("loverName").value.trim();
+      const name1 = document.getElementById("yourName").value.trim().toLowerCase();
+      const name2 = document.getElementById("loverName").value.trim().toLowerCase();
       const resultDiv = document.getElementById("result");
-      const validName = name => /^[A-Za-z]{3,}$/.test(name);
 
-      if (!validName(name1) || !validName(name2)) {
-        resultDiv.innerHTML = <p style="color: red;">❌ Names must be at least 3 letters and contain only alphabets (no spaces, numbers, or symbols).</p>;
+      if (!name1.match(/^[a-zA-Z\s]+$/) || !name2.match(/^[a-zA-Z\s]+$/)) {
+        resultDiv.textContent = "❌ Only letters are allowed.";
         return;
       }
 
-      const percent1 = calculatePercentage(name1.toLowerCase(), name2.toLowerCase());
-      const percent2 = calculatePercentage(name2.toLowerCase(), name1.toLowerCase());
-      const average = Math.round((percent1 + percent2) / 2);
-      const message = getLoveMessage(average);
+      const normalized1 = name1.replace(/\s+/g, "");
+      const normalized2 = name2.replace(/\s+/g, "");
 
-      resultDiv.innerHTML = `
-        <p><strong>❤ Compatibility Score:</strong> ${average}%</p>
-        <p>${message}</p>
-        <p><em>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></em></p>
-      `;
+      const specialPairs = [
+        ["pradeep", "priyanka"],
+        ["priyanka", "pradeep"],
+        ["pradeeppant", "priyankabhattata"],
+        ["priyankabhattata", "pradeeppant"],
+      ];
 
-      try {
-        await set(push(ref(database, 'love_results')), {
-          name1,
-          name2,
-          percentage: average,
-          timestamp: new Date().toISOString()
-        });
-        console.log("Saved to Firebase");
-      } catch (err) {
-        console.error("Error saving to Firebase:", err);
-      }
+      const isSpecial = specialPairs.some(
+        ([a, b]) => normalized1 === a && normalized2 === b
+      );
+
+      let percentage = isSpecial ? 99 : calculatePercentage(normalized1, normalized2);
+      percentage = Math.min(percentage, 100);
+      const message = getLoveMessage(percentage);
+
+      resultDiv.innerHTML = `<h2>Love Score: ${percentage}%</h2><p>${message}</p>`;
+
+      db.collection("results")
+        .add({
+          name1: name1,
+          name2: name2,
+          percentage: percentage,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then(() => console.log("Saved"))
+        .catch((error) => console.error("Error saving:", error));
     });
   </script>
 </body>
