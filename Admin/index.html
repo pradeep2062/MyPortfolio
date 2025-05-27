@@ -197,7 +197,8 @@
             list.forEach(item => {
                 let row = resultsTableBody.insertRow();
                 // Name(s)
-                row.insertCell().innerText = item.name;
+               row.insertCell().innerText = `${item.name1 || ''} + ${item.name2 || ''}`;
+
                 // Percentage
                 row.insertCell().innerText = item.percentage;
                 // Date
