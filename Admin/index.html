@@ -1,223 +1,114 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Love Logs Dashboard 💘</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f7f8fc;
-      color: #333;
-    }
-
-    h1 {
-      text-align: center;
-      color: #ff4d6d;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .top-bar input {
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-
-    .top-bar button {
-      padding: 8px 16px;
-      background: #ff4d6d;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-      margin-left: 10px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    th, td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
-
-    th {
-      background: #ff4d6d;
-      color: white;
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      gap: 12px;
-    }
-
-    .pagination button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 6px;
-      background: #ff4d6d;
-      color: white;
-      cursor: pointer;
-    }
-
-    .pagination button:disabled {
-      background: #ccc;
-      cursor: default;
-    }
-  </style>
+  <title>Admin Dashboard - Love Logs</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <div class="top-bar">
-    <h1>💘 Love Check History</h1>
-    <div>
-      <input type="text" id="filterInput" placeholder="Filter by name or date (YYYY-MM-DD)">
-      <button id="exportBtn">⬇️ Export CSV</button>
-      <button id="logout">Logout</button>
+<body class="bg-light">
+  <div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Admin Dashboard</h2>
+      <button id="logoutBtn" class="btn btn-danger">Logout</button>
     </div>
+    <div class="card p-3 mb-4">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <input type="text" id="searchName" class="form-control" placeholder="Search by name" />
+        </div>
+        <div class="col-md-3">
+          <input type="date" id="startDate" class="form-control" />
+        </div>
+        <div class="col-md-3">
+          <input type="date" id="endDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100" onclick="applyFilters()">Filter</button>
+        </div>
+      </div>
+    </div>
+    <div id="logList" class="table-responsive"></div>
   </div>
 
-  <table id="historyTable">
-    <thead>
-      <tr>
-        <th>Name 1</th>
-        <th>Name 2</th>
-        <th>Percentage</th>
-        <th>Timestamp</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <div class="pagination">
-    <button id="prevPage">← Previous</button>
-    <button id="nextPage">Next →</button>
-  </div>
-
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyBPdEH4AkvQHjNNJ2cfZvuc2z9V-hR7wnQ",
-      authDomain: "love-calculator-abb6d.firebaseapp.com",
-      projectId: "love-calculator-abb6d",
-      storageBucket: "love-calculator-abb6d.firebasestorage.app",
-      messagingSenderId: "429986389516",
-      appId: "1:429986389516:web:519f16f5d7bc0de812d829"
+      apiKey: "AIzaSyAGmvrB3XwlTag_iUJv6jbxuAj615ZBkjg",
+      authDomain: "lovecalculator-84ad0.firebaseapp.com",
+      projectId: "lovecalculator-84ad0",
+      storageBucket: "lovecalculator-84ad0.appspot.com",
+      messagingSenderId: "67244028596",
+      appId: "1:67244028596:web:892c5cba5fd42fecacdde1"
     };
-
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
-    const tableBody = document.querySelector("#historyTable tbody");
-    const logoutBtn = document.getElementById("logout");
-    const exportBtn = document.getElementById("exportBtn");
-    const filterInput = document.getElementById("filterInput");
-    const prevBtn = document.getElementById("prevPage");
-    const nextBtn = document.getElementById("nextPage");
+    const logList = document.getElementById("logList");
 
-    let allData = [];
-    let currentPage = 0;
-    const pageSize = 10;
-
-    function renderPage() {
-      const term = filterInput.value.toLowerCase();
-      const filtered = allData.filter(doc => {
-        const d = doc.data();
-        const nameMatch = d.name1.toLowerCase().includes(term) || d.name2.toLowerCase().includes(term);
-        const dateStr = d.timestamp?.toDate().toISOString().split('T')[0];
-        const dateMatch = dateStr && dateStr.includes(term);
-        return nameMatch || dateMatch;
-      });
-
-      const start = currentPage * pageSize;
-      const page = filtered.slice(start, start + pageSize);
-
-      tableBody.innerHTML = '';
-      page.forEach(doc => {
-        const { name1, name2, percentage, timestamp } = doc.data();
-        const date = timestamp?.toDate();
-        const dateStr = date ? date.toLocaleString() : 'N/A';
-        const row = `<tr>
-          <td>${name1}</td>
-          <td>${name2}</td>
-          <td>${percentage}%</td>
-          <td>${dateStr}</td>
-        </tr>`;
-        tableBody.insertAdjacentHTML('beforeend', row);
-      });
-
-      prevBtn.disabled = currentPage === 0;
-      nextBtn.disabled = start + pageSize >= filtered.length;
-    }
-
-    filterInput.addEventListener("input", () => {
-      currentPage = 0;
-      renderPage();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      currentPage = Math.max(currentPage - 1, 0);
-      renderPage();
-    });
-
-    nextBtn.addEventListener("click", () => {
-      currentPage++;
-      renderPage();
-    });
-
-    exportBtn.addEventListener("click", () => {
-      let csv = "Name1,Name2,Percentage,Timestamp\n";
-      allData.forEach(doc => {
-        const d = doc.data();
-        const ts = d.timestamp?.toDate().toISOString() || '';
-        csv += `${d.name1},${d.name2},${d.percentage},${ts}\n`;
-      });
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "love-history.csv";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-
-    logoutBtn.addEventListener("click", () => auth.signOut().then(() => location.reload()));
-
-    auth.onAuthStateChanged(user => {
-      if (user && user.email === "your@email.com") {
-        db.collection("history").orderBy("timestamp", "desc").onSnapshot(snapshot => {
-          allData = snapshot.docs;
-          renderPage();
-        });
+    // Require login
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        alert("Access denied. Please log in.");
+        window.location.href = "login.html";
       } else {
-        auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
-          .catch(error => alert("Access denied or login failed."));
+        loadLogs();
       }
     });
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      auth.signOut().then(() => window.location.href = "login.html");
+    });
+
+    let allLogs = [];
+
+    function loadLogs() {
+      db.collection("results").orderBy("timestamp", "desc").onSnapshot(snapshot => {
+        allLogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        displayLogs(allLogs);
+      });
+    }
+
+    function displayLogs(logs) {
+      if (!logs.length) {
+        logList.innerHTML = "<p>No results found.</p>";
+        return;
+      }
+
+      let html = `<table class="table table-striped">
+        <thead><tr><th>Name 1</th><th>Name 2</th><th>Percentage</th><th>Date</th></tr></thead><tbody>`;
+      logs.forEach(log => {
+        const date = log.timestamp?.toDate().toLocaleString() || 'N/A';
+        html += `<tr>
+          <td>${log.name1}</td>
+          <td>${log.name2}</td>
+          <td>${log.percentage}%</td>
+          <td>${date}</td>
+        </tr>`;
+      });
+      html += "</tbody></table>";
+      logList.innerHTML = html;
+    }
+
+    function applyFilters() {
+      const nameFilter = document.getElementById("searchName").value.toLowerCase();
+      const start = document.getElementById("startDate").value;
+      const end = document.getElementById("endDate").value;
+      const startDate = start ? new Date(start) : null;
+      const endDate = end ? new Date(end + 'T23:59:59') : null;
+
+      const filtered = allLogs.filter(log => {
+        const nameMatch = log.name1.toLowerCase().includes(nameFilter) || log.name2.toLowerCase().includes(nameFilter);
+        const logDate = log.timestamp?.toDate();
+        const dateMatch = (!startDate || logDate >= startDate) && (!endDate || logDate <= endDate);
+        return nameMatch && dateMatch;
+      });
+
+      displayLogs(filtered);
+    }
   </script>
 </body>
 </html>
