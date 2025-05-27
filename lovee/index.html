@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Love Calculator ❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -22,6 +21,8 @@
       border-radius: 15px;
       text-align: center;
       box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      width: 90%;
+      max-width: 400px;
     }
     input, button {
       margin: 10px 0;
@@ -59,7 +60,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"></script>
 
   <script>
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBPdEH4AkvQHjNNJ2cfZvuc2z9V-hR7wnQ",
       authDomain: "love-calculator-abb6d.firebaseapp.com",
@@ -70,46 +70,44 @@
       measurementId: "G-QEB8ZLZ730"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Optional: sign in anonymously
+    // Optional: Anonymous sign-in for write access
     auth.signInAnonymously().catch(err => console.warn("Auth error:", err));
   </script>
 
   <script>
-    // Helper function for love percentage (simple version)
-    function calculateLovePercentage(a, b) {
-      const combined = (a + "loves" + b).toLowerCase().replace(/\s+/g, '');
+    function calculateLovePercentage(name1, name2) {
+      const combined = (name1 + "loves" + name2).toLowerCase().replace(/\s+/g, '');
       let total = 0;
       for (let i = 0; i < combined.length; i++) {
         total += combined.charCodeAt(i);
       }
-      return total % 101; // Return 0-100%
+      return total % 101;
     }
 
     document.getElementById("loveForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const name1 = document.getElementById("yourName").value.trim();
       const name2 = document.getElementById("loverName").value.trim();
+
       const percent = calculateLovePercentage(name1, name2);
       const resultDiv = document.getElementById("result");
 
       resultDiv.innerHTML = `<p><strong>❤️ Love Score:</strong> ${percent}%</p>
         <p>Between <strong>${name1.toUpperCase()}</strong> and <strong>${name2.toUpperCase()}</strong></p>`;
 
-      // Save to Firestore
       db.collection("lovechecks").add({
         name1: name1.toUpperCase(),
         name2: name2.toUpperCase(),
         percentage: percent,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       }).then(() => {
-        console.log("✅ Logged to Firestore");
+        console.log("✅ Successfully logged to Firestore");
       }).catch((error) => {
-        console.error("❌ Firestore write error:", error);
+        console.error("❌ Failed to log:", error);
       });
     });
   </script>
