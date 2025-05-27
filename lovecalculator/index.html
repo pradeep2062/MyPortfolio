@@ -200,9 +200,33 @@
       background: #333;
       color: #fff;
     }
+    .home-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #fff;
+  color: #ff4d6d;
+  padding: 10px 18px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s, color 0.3s;
+  z-index: 100;
+}
+
+.home-button:hover {
+  background: #ff4d6d;
+  color: #fff;
+}
+
   </style>
 </head>
 <body>
+  <a href="https://pradeeppant.com.np" class="home-button">
+  🏠 Home
+</a>
+
   <button class="dark-toggle" id="darkToggle">🌙 Toggle Dark Mode</button>
   <div class="heart-bg"></div>
   <div class="container">
