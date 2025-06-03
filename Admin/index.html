@@ -313,8 +313,12 @@ filterBtn.addEventListener("click", () => {
     // Extract table rows
     document.querySelectorAll("#resultsTable tbody tr").forEach(row => {
       const cols = row.querySelectorAll("td");
-      const rowData = [];
-      cols.forEach(col => rowData.push(col.innerText));
+      const rowData = [
+         cols[1].innerText, // Name(s)
+            cols[2].innerText, // Percentage
+            cols[3].innerText  // Date
+             ];
+
       rows.push(rowData);
     });
 
