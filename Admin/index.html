@@ -95,10 +95,12 @@
             <button id="filter-btn">Filter</button>
             <button id="clear-filter-btn">Clear</button>
             <button id="export-btn">Export PDF</button>
+            <button id="delete-selected-btn">Delete Selected</button>
         </div>
         <table id="resultsTable">
             <thead>
                 <tr>
+                    <th><input type="checkbox" id="selectAllCheckbox" /></th>
                     <th onclick="sortTable(0)">Name(s)</th>
                     <th onclick="sortTable(1)">Percentage</th>
                     <th onclick="sortTable(2)">Date</th>
@@ -194,32 +196,47 @@
         }
 
         // Display given list of data in the table
-        function displayData(list) {
-            resultsTableBody.innerHTML = "";
-            list.forEach(item => {
-                let row = resultsTableBody.insertRow();
-                // Name(s)
-               row.insertCell().innerText = `${item.name1 || ''} + ${item.name2 || ''}`;
+      function displayData(list) {
+    resultsTableBody.innerHTML = "";
+    list.forEach(item => {
+        const row = resultsTableBody.insertRow();
+        row.dataset.id = item.id;
 
-                // Percentage
-                row.insertCell().innerText = item.percentage;
-                // Date
-                let date = item.timestamp ? item.timestamp.toDate() : new Date();
-                row.insertCell().innerText = date.toLocaleString();
-                // Actions: Edit and Delete
-                let actionCell = row.insertCell();
-                let editBtn = document.createElement("button");
-                editBtn.textContent = "Edit";
-                editBtn.className = "action-btn";
-                editBtn.onclick = () => editRecord(item.id, item);
-                let deleteBtn = document.createElement("button");
-                deleteBtn.textContent = "Delete";
-                deleteBtn.className = "action-btn";
-                deleteBtn.onclick = () => deleteRecord(item.id);
-                actionCell.appendChild(editBtn);
-                actionCell.appendChild(deleteBtn);
-            });
-        }
+        // Checkbox cell
+        const checkboxCell = row.insertCell();
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.className = "rowCheckbox";
+        checkbox.value = item.id;
+        checkboxCell.appendChild(checkbox);
+
+        // Name(s)
+        row.insertCell().innerText = `${item.name1 || ''} + ${item.name2 || ''}`;
+
+        // Percentage
+        row.insertCell().innerText = item.percentage;
+
+        // Date
+        const date = item.timestamp ? item.timestamp.toDate() : new Date();
+        row.insertCell().innerText = date.toLocaleString();
+
+        // Actions
+        const actionCell = row.insertCell();
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editBtn.className = "action-btn";
+        editBtn.onclick = () => editRecord(item.id, item);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "action-btn";
+        deleteBtn.onclick = () => deleteRecord(item.id);
+
+        actionCell.appendChild(editBtn);
+        actionCell.appendChild(deleteBtn);
+    });
+}
+
 
         // Sort table by column (basic string sort)
         function sortTable(colIndex) {
@@ -252,28 +269,30 @@
                 }
             }
         }
+filterBtn.addEventListener("click", () => {
+    const nameFilter = searchNameInput.value.trim().toLowerCase();
 
-        // Filter records by name and date range
-        filterBtn.addEventListener("click", () => {
-            let nameFilter = searchNameInput.value.toLowerCase();
-            let start = new Date(startDateInput.value);
-            let end = new Date(endDateInput.value);
-            let filtered = dataList.filter(item => {
-                let matchesName = true, matchesDate = true;
-                if (nameFilter) matchesName = item.name.toLowerCase().includes(nameFilter);
-                if (startDateInput.value) {
-                    let itemDate = item.timestamp ? item.timestamp.toDate() : new Date();
-                    matchesDate = matchesDate && (itemDate >= start);
-                }
-                if (endDateInput.value) {
-                    let itemDate = item.timestamp ? item.timestamp.toDate() : new Date();
-                    // include end of day
-                    matchesDate = matchesDate && (itemDate <= new Date(end.getTime() + 24*60*60*1000));
-                }
-                return matchesName && matchesDate;
-            });
-            displayData(filtered);
-        });
+    const start = startDateInput.value ? new Date(startDateInput.value + 'T00:00:00') : null;
+    const end = endDateInput.value ? new Date(endDateInput.value + 'T23:59:59') : null;
+
+    const filtered = dataList.filter(item => {
+        const name1 = item.name1?.toLowerCase() || "";
+        const name2 = item.name2?.toLowerCase() || "";
+        const combinedName = `${name1} ${name2}`;
+
+        const matchesName = !nameFilter || combinedName.includes(nameFilter);
+
+        const itemDate = item.timestamp?.toDate?.() || new Date();
+        const matchesStart = !start || itemDate >= start;
+        const matchesEnd = !end || itemDate <= end;
+
+        return matchesName && matchesStart && matchesEnd;
+    });
+
+    displayData(filtered);
+});
+
+
 
         // Clear filters
         clearFilterBtn.addEventListener("click", () => {
@@ -334,6 +353,36 @@
             .then(() => fetchData())
             .catch(error => console.error("Error updating record: ", error));
         }
+        // Select All checkbox
+const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+selectAllCheckbox.addEventListener("change", () => {
+    const checkboxes = document.querySelectorAll(".rowCheckbox");
+    checkboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+});
+
+// Delete Selected button
+document.getElementById("delete-selected-btn").addEventListener("click", () => {
+    const selectedCheckboxes = document.querySelectorAll(".rowCheckbox:checked");
+    if (selectedCheckboxes.length === 0) {
+        alert("No records selected.");
+        return;
+    }
+
+    if (!confirm(`Are you sure you want to delete ${selectedCheckboxes.length} record(s)?`)) return;
+
+    const deletePromises = [];
+    selectedCheckboxes.forEach(cb => {
+        const id = cb.value;
+        deletePromises.push(db.collection("results").doc(id).delete());
+    });
+
+    Promise.all(deletePromises)
+        .then(() => {
+            fetchData(); // Refresh
+            selectAllCheckbox.checked = false;
+        })
+        .catch(error => console.error("Bulk delete error:", error));
+});
     </script>
 </body>
 </html>
