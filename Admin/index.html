@@ -71,6 +71,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <!-- Login Form -->
@@ -92,7 +94,7 @@
             <input type="date" id="endDate" />
             <button id="filter-btn">Filter</button>
             <button id="clear-filter-btn">Clear</button>
-            <button id="export-btn">Export CSV</button>
+            <button id="export-btn">Export PDF</button>
         </div>
         <table id="resultsTable">
             <thead>
@@ -281,23 +283,35 @@
             displayData(dataList);
         });
 
-        // Export displayed data to CSV
-        exportBtn.addEventListener("click", () => {
-            let rows = [['Name(s)', 'Percentage', 'Date']];
-            document.querySelectorAll("#resultsTable tbody tr").forEach(row => {
-                let cols = row.querySelectorAll("td");
-                let rowData = [];
-                cols.forEach(col => rowData.push(col.innerText));
-                rows.push(rowData);
-            });
-            let csvContent = rows.map(e => e.join(",")).join("\\n");
-            let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            let url = URL.createObjectURL(blob);
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = 'results.csv';
-            a.click();
-        });
+  exportBtn.addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Table headers
+    const headers = [["Name(s)", "Percentage", "Date"]];
+    const rows = [];
+
+    // Extract table rows
+    document.querySelectorAll("#resultsTable tbody tr").forEach(row => {
+      const cols = row.querySelectorAll("td");
+      const rowData = [];
+      cols.forEach(col => rowData.push(col.innerText));
+      rows.push(rowData);
+    });
+
+    // AutoTable to format and insert table
+    doc.autoTable({
+      head: headers,
+      body: rows,
+      startY: 20,
+      theme: 'grid',
+      headStyles: { fillColor: [22, 160, 133] }, // Optional styling
+      margin: { top: 20 }
+    });
+
+    doc.save("results.pdf");
+  });
+
 
         // Delete a Firestore document by ID
         function deleteRecord(id) {
