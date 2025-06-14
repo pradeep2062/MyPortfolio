@@ -4,3 +4,6 @@ function toggleMenu() {
   menu.classList.toggle("open");
   icon.classList.toggle("open");
 }
+  if (window.location.pathname.endsWith('/index.html')) {
+    window.location.href = window.location.origin + '/';
+  }
